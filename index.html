@@ -80,6 +80,7 @@
 
 
 <meta name="description" content="This is iter‘s heaven">
+<meta name="keywords" content="heigeblog">
 <meta property="og:type" content="website">
 <meta property="og:title" content="HeiGe | blog">
 <meta property="og:url" content="http://heiheiheiheihei.xyz/index.html">
@@ -272,10 +273,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://heiheiheiheihei.xyz/2019/08/11/Vue：获取当前定位城市名/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HeiGe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HeiGe | blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/11/Vue：获取当前定位城市名/" itemprop="url">Vue：获取当前定位城市名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-11T23:50:41+08:00">
+                2019-08-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web前端/" itemprop="url" rel="index">
+                    <span itemprop="name">web前端</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>1、在工程目录index.html中引入：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"http://api.map.baidu.com/api?v=2.0&amp;ak=您的密钥"</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>ps：秘钥可以去百度开发者平台申请</p>
+<p>2、在build/webpack.base.conf.js（与entry同级）中配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">externals:&#123;</span><br><span class="line">    <span class="string">"BMap"</span>:<span class="string">"BMap"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>3、重新运行一下npm install或者yarn；<br>4、配置好以后到对应需要获取城市名的页面引入百度地图对象 BMap：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> BMap <span class="keyword">from</span> <span class="string">'BMap'</span></span><br></pre></td></tr></table></figure>
+
+<p>5、获取城市：<br>html部分</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;&#123;&#123;LocationCity&#125;&#125;&lt;<span class="regexp">/div&gt;       &lt;!-- 渲染层 --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>js部分</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    data()&#123;</span><br><span class="line">        <span class="keyword">return</span>&#123;</span><br><span class="line">            LocationCity:<span class="string">"正在定位"</span>    <span class="comment">//给渲染层定义一个初始值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    mounted()&#123;</span><br><span class="line">        <span class="keyword">this</span>.city()    <span class="comment">//触发获取城市方法</span></span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">        city()&#123;    <span class="comment">//定义获取城市方法</span></span><br><span class="line">            <span class="keyword">const</span> geolocation = <span class="keyword">new</span> BMap.Geolocation();</span><br><span class="line">            <span class="keyword">var</span> _this = <span class="keyword">this</span></span><br><span class="line">            geolocation.getCurrentPosition(<span class="function"><span class="keyword">function</span> <span class="title">getinfo</span>(<span class="params">position</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">let</span> city = position.address.city;             <span class="comment">//获取城市信息</span></span><br><span class="line">                <span class="keyword">let</span> province = position.address.province;    <span class="comment">//获取省份信息</span></span><br><span class="line">                _this.LocationCity = city</span><br><span class="line">            &#125;, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">                _this.LocationCity = <span class="string">"定位失败"</span></span><br><span class="line">            &#125;, &#123;<span class="attr">provider</span>: <span class="string">'baidu'</span>&#125;);		</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://heiheiheiheihei.xyz/2019/08/06/关于vue状态过渡transition不起作用的原因解决/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Zuo Junyu">
+      <meta itemprop="name" content="HeiGe">
       <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -343,7 +499,7 @@
       
         
           
-            <p>总所周知，vue中的transition标签可以方便得进行动画过渡，使用的方法也很简单。</p>
+            <p>众所周知，vue中的transition标签可以方便得进行动画过渡，使用的方法也很简单。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;transition name=<span class="string">"你要的名字"</span>&gt;</span><br><span class="line">  过渡的元素...</span><br><span class="line">&lt;<span class="regexp">/transition&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>这里需要主要一点的是：过渡的元素只能是以下之一：</p>
@@ -368,7 +524,7 @@
 
 <p>刷新运行，完美实现效果～～～～</p>
 <p>参考资料：<a href="https://cn.vuejs.org/v2/guide/transitions.html" target="_blank" rel="noopener">https://cn.vuejs.org/v2/guide/transitions.html</a><br>补充：<br>问题1：不同类型的组件之间切换，有过渡效果，而相同组件(不同内容)切换则没有过渡效果<br>vue官网的描述：当有相同标签名的元素切换时，需要通过 key 特性设置唯一的值来标记以让 Vue 区分它们，否则 Vue 为了效率只会替换相同标签内部的内容。即使在技术上没有必要，给在 组件中的多个元素设置 key 是一个更好的实践。<br>改进后代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;transition :name=<span class="string">"slide"</span>&gt;</span><br><span class="line"> &lt;keep-alive&gt;</span><br><span class="line">  &lt;component </span><br><span class="line">   :is=<span class="string">"questionMap[currentQuestion.type]"</span></span><br><span class="line">   :key=<span class="string">"index"</span></span><br><span class="line">   :currentQuestion=<span class="string">"currentQuestion"</span></span><br><span class="line">   :index=<span class="string">"index"</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/component&gt;</span></span><br><span class="line"><span class="regexp"> &lt;/</span>keep-alive&gt;</span><br><span class="line">&lt;<span class="regexp">/transition&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;transition :name=<span class="string">"slide"</span>&gt;</span><br><span class="line">  &lt;keep-alive&gt;</span><br><span class="line">  &lt;component </span><br><span class="line">    :is=<span class="string">"questionMap[currentQuestion.type]"</span></span><br><span class="line">    :key=<span class="string">"index"</span></span><br><span class="line">    :currentQuestion=<span class="string">"currentQuestion"</span></span><br><span class="line">    :index=<span class="string">"index"</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/component&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>keep-alive&gt;</span><br><span class="line">&lt;<span class="regexp">/transition&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>给组件添加了key=”index”了之后，不管任何类型都有过渡效果了，因为此时vue将每一个组件区分为不同的组件</p>
 <p>问题2：前一个组件滑动出去后，后一个组件没有滑动效果，而是直接显示了</p>
@@ -378,7 +534,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;transition :name=<span class="string">"slide"</span> mode=<span class="string">"out-in"</span>&gt;</span><br><span class="line">  &lt;keep-alive&gt;</span><br><span class="line">  &lt;component </span><br><span class="line">    :is=<span class="string">"questionMap[currentQuestion.type]"</span></span><br><span class="line">    :key=<span class="string">"index"</span></span><br><span class="line">    :currentQuestion=<span class="string">"currentQuestion"</span></span><br><span class="line">    :index=<span class="string">"index"</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/component&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>keep-alive&gt;</span><br><span class="line">&lt;<span class="regexp">/transition&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>如果要使用列表排序的话，需要使用transition-group，下面是一个简单的例子</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">"list-demo"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"demo"</span>&gt;</span><br><span class="line"> &lt;button v-on:click=<span class="string">"add"</span>&gt;Add&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp"> &lt;button v-on:click="remove"&gt;Remove&lt;/</span>button&gt;</span><br><span class="line"> &lt;transition-group name=<span class="string">"list"</span> tag=<span class="string">"p"</span>&gt;</span><br><span class="line">  &lt;span v-<span class="keyword">for</span>=<span class="string">"item in items"</span> v-bind:key=<span class="string">"item"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"list-item"</span>&gt;</span><br><span class="line">   &#123;&#123; item &#125;&#125;</span><br><span class="line">  &lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp"> &lt;/</span>transition-group&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">new Vue(&#123;</span></span><br><span class="line"><span class="regexp"> el: '#list-demo',</span></span><br><span class="line"><span class="regexp"> data: &#123;</span></span><br><span class="line"><span class="regexp">  items: [1,2,3,4,5,6,7,8,9],</span></span><br><span class="line"><span class="regexp">  nextNum: 10</span></span><br><span class="line"><span class="regexp"> &#125;,</span></span><br><span class="line"><span class="regexp"> methods: &#123;</span></span><br><span class="line"><span class="regexp">  randomIndex: function () &#123;</span></span><br><span class="line"><span class="regexp">   return Math.floor(Math.random() * this.items.length)</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  add: function () &#123;</span></span><br><span class="line"><span class="regexp">   this.items.splice(this.randomIndex(), 0, this.nextNum++)</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  remove: function () &#123;</span></span><br><span class="line"><span class="regexp">   this.items.splice(this.randomIndex(), 1)</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp"> &#125;</span></span><br><span class="line"><span class="regexp">&#125;)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">.list-item &#123;</span></span><br><span class="line"><span class="regexp"> display: inline-block;</span></span><br><span class="line"><span class="regexp"> margin-right: 10px;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">.list-enter-active, .list-leave-active &#123;</span></span><br><span class="line"><span class="regexp"> transition: all 1s;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">.list-enter, .list-leave-to</span></span><br><span class="line"><span class="regexp">/</span>* .list-leave-active <span class="keyword">for</span> below version <span class="number">2.1</span><span class="number">.8</span> *<span class="regexp">/ &#123;</span></span><br><span class="line"><span class="regexp"> opacity: 0;</span></span><br><span class="line"><span class="regexp"> transform: translateY(30px);</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">"list-demo"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"demo"</span>&gt;</span><br><span class="line">  &lt;button v-on:click=<span class="string">"add"</span>&gt;Add&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">  &lt;button v-on:click="remove"&gt;Remove&lt;/</span>button&gt;</span><br><span class="line">  &lt;transition-group name=<span class="string">"list"</span> tag=<span class="string">"p"</span>&gt;</span><br><span class="line">  &lt;span v-<span class="keyword">for</span>=<span class="string">"item in items"</span> v-bind:key=<span class="string">"item"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"list-item"</span>&gt;</span><br><span class="line">    &#123;&#123; item &#125;&#125;</span><br><span class="line">  &lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>transition-group&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">new Vue(&#123;</span></span><br><span class="line"><span class="regexp">  el: '#list-demo',</span></span><br><span class="line"><span class="regexp">  data: &#123;</span></span><br><span class="line"><span class="regexp">  items: [1,2,3,4,5,6,7,8,9],</span></span><br><span class="line"><span class="regexp">  nextNum: 10</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  methods: &#123;</span></span><br><span class="line"><span class="regexp">  randomIndex: function () &#123;</span></span><br><span class="line"><span class="regexp">    return Math.floor(Math.random() * this.items.length)</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  add: function () &#123;</span></span><br><span class="line"><span class="regexp">    this.items.splice(this.randomIndex(), 0, this.nextNum++)</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  remove: function () &#123;</span></span><br><span class="line"><span class="regexp">    this.items.splice(this.randomIndex(), 1)</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">.list-item &#123;</span></span><br><span class="line"><span class="regexp">  display: inline-block;</span></span><br><span class="line"><span class="regexp">  margin-right: 10px;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">.list-enter-active, .list-leave-active &#123;</span></span><br><span class="line"><span class="regexp">  transition: all 1s;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">.list-enter, .list-leave-to&#123;</span></span><br><span class="line"><span class="regexp">  opacity: 0;</span></span><br><span class="line"><span class="regexp">  transform: translateY(30px);</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
 
 
           
@@ -431,7 +587,7 @@
     <link itemprop="mainEntityOfPage" href="http://heiheiheiheihei.xyz/2019/08/04/hexo删除默认文章/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Zuo Junyu">
+      <meta itemprop="name" content="HeiGe">
       <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -572,7 +728,9 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">Zuo Junyu</p>
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="HeiGe">
+            
+              <p class="site-author-name" itemprop="name">HeiGe</p>
               <p class="site-description motion-element" itemprop="description">This is iter‘s heaven</p>
           </div>
 
@@ -583,14 +741,32 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
 
             
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
             
 
           </nav>
@@ -628,7 +804,7 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Zuo Junyu</span>
+  <span class="author" itemprop="copyrightHolder">HeiGe</span>
 
   
 </div>
